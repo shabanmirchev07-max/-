@@ -1,158 +1,47 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Новини България</title>
-<style>
-body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: #f4f4f4;
-    margin: 0;
-    color: #222;
-}
-header {
-    background: #004aad;
-    color: white;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-header h1 { margin: 0; }
-header .search-box input {
-    padding: 5px 10px;
-    border-radius: 20px;
-    border: none;
-    width: 200px;
-}
-header .search-box button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    background: white;
-    color: #004aad;
-    font-weight: bold;
-}
-.news-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
-    gap: 20px;
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
-}
-.news-item {
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-}
-.news-item img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-}
-.news-item h3 {
-    margin: 10px;
-    font-size: 18px;
-}
-.news-item p {
-    margin: 0 10px 10px;
-    font-size: 14px;
-    color: #555;
-}
-.share-buttons {
-    display: flex;
-    justify-content: flex-start;
-    gap: 5px;
-    padding: 10px;
-}
-.share-buttons a {
-    text-decoration: none;
-    padding: 5px 8px;
-    background: #004aad;
-    color: white;
-    border-radius: 5px;
-    font-size: 12px;
-}
-.share-buttons a:hover {
-    background: #00347a;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaban News Hub</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; }
+        .news article { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #ccc; }
+        a { color: #2980b9; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-<header>
-    <h1>Новини България</h1>
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Търси новини...">
-        <button onclick="filterNews()">Търси</button>
-    </div>
-</header>
+    <h1>Последни новини</h1>
+    <section class="news"></section>
 
-<div class="news-container" id="newsContainer">
-    <!-- Новини ще се зареждат тук -->
-</div>
+    <script>
+        const apiKey = "bef62a5622214c509e31eeb3fe2ad515"; // твоя API ключ
+        const url = `https://newsapi.org/v2/top-headlines?country=bg&apiKey=${apiKey}`;
 
-<script>
-// RSS feeds (чрез rss2json.com без ключ за demo)
-const feeds = [
-    "https://api.rss2json.com/v1/api.json?rss_url=https://fakti.bg/rss",
-    "https://api.rss2json.com/v1/api.json?rss_url=https://btvnovinite.bg/rss",
-    "https://api.rss2json.com/v1/api.json?rss_url=https://www.novini.bg/rss"
-];
-
-let allNews = [];
-
-async function loadNews() {
-    for (const feed of feeds) {
-        try {
-            const res = await fetch(feed);
-            const data = await res.json();
-            if(data.items) {
-                allNews = allNews.concat(data.items);
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const newsSection = document.querySelector('.news');
+            if(data.articles.length === 0){
+                newsSection.innerHTML = "<p>Няма налични новини в момента.</p>";
+                return;
             }
-        } catch (e) {
-            console.log("Грешка при зареждане на новини:", e);
-        }
-    }
-    displayNews(allNews);
-}
-
-function displayNews(newsArray) {
-    const container = document.getElementById("newsContainer");
-    container.innerHTML = "";
-    newsArray.forEach(item => {
-        const div = document.createElement("div");
-        div.classList.add("news-item");
-        div.innerHTML = `
-            <img src="${item.thumbnail || 'https://via.placeholder.com/400x180'}" alt="Новина">
-            <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
-            <p>${item.description ? item.description.replace(/(<([^>]+)>)/gi, "") : ""}</p>
-            <div class="share-buttons">
-                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(item.link)}" target="_blank">Facebook</a>
-                <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(item.link)}&text=${encodeURIComponent(item.title)}" target="_blank">Twitter</a>
-                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(item.title + ' ' + item.link)}" target="_blank">WhatsApp</a>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-// Търсачка
-function filterNews() {
-    const keyword = document.getElementById("searchInput").value.toLowerCase();
-    const filtered = allNews.filter(item => 
-        item.title.toLowerCase().includes(keyword) || 
-        (item.description && item.description.toLowerCase().includes(keyword))
-    );
-    displayNews(filtered);
-}
-
-loadNews();
-</script>
+            data.articles.forEach(article => {
+                const newsItem = document.createElement('article');
+                newsItem.innerHTML = `
+                    <h2>${article.title}</h2>
+                    <p>${article.description || ''}</p>
+                    <a href="${article.url}" target="_blank">Прочети повече</a>
+                `;
+                newsSection.appendChild(newsItem);
+            });
+        })
+        .catch(err => {
+            console.error("Грешка при зареждането на новините:", err);
+            document.querySelector('.news').innerHTML = "<p>Възникна грешка при зареждането на новините.</p>";
+        });
+    </script>
 </body>
 </html>
