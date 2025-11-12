@@ -1,0 +1,96 @@
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    color: #222;
+}
+
+header {
+    background: #004aad;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header .search-box input {
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: none;
+    width: 200px;
+}
+
+header .search-box button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    background: white;
+    color: #004aad;
+    font-weight: bold;
+}
+
+.news-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.news-item {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease-in-out;
+}
+
+.news-item:hover {
+    transform: scale(1.05);
+}
+
+.news-item img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.news-item h3 {
+    margin: 10px;
+    font-size: 18px;
+}
+
+.news-item p {
+    margin: 0 10px 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.share-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: 10px;
+}
+
+.share-buttons a {
+    text-decoration: none;
+    padding: 5px 8px;
+    background: #004aad;
+    color: white;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.share-buttons a:hover {
+    background: #00347a;
+}
